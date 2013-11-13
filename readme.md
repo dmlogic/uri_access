@@ -77,3 +77,13 @@ current URI. This can be overridden by setting
 
     $config['uri_access_compare_uri'] = YOUR_CUSTOM_URI_STRING;
 
+### Append rediect location (optional)
+
+    $config['uri_access_append_uri'] = true;
+
+Setting the above variable will append a query string to your redirect URL
+in the format
+
+    `from=currentURI`
+
+This can then be used by other code to act as necessary.

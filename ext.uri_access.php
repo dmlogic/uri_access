@@ -33,6 +33,10 @@ class Uri_access_ext {
     public $settings_exist  = 'n';
     public $version         = '1.0';
 
+    //--------------------------------------------------------------------------
+
+    private $compareUri;
+
     /**
      * Constructor
      *
@@ -83,16 +87,43 @@ class Uri_access_ext {
      */
     public function sessions_end($session)
     {
-        $compareUri = (ee()->config->item('uri_access_compare_uri')) ? ee()->config->item('uri_access_compare_uri') : ee()->uri->uri_string();
+        $this->compareUri = (ee()->config->item('uri_access_compare_uri')) ? ee()->config->item('uri_access_compare_uri') : ee()->uri->uri_string();
 
         $checker = new UriAccess\Checker( ee()->config->item('uri_access_map') );
 
-        if(!$checker->checkAllowed($compareUri,
+        if(!$checker->checkAllowed($this->compareUri,
                                    $session->userdata('group_id'),
                                    $session->userdata('group_id'),$session->userdata('member_id'))) {
 
-            ee()->functions->redirect(ee()->config->item('uri_access_denied_url'), FALSE, 403);
+            $this->redirect();
         }
+    }
+
+    //--------------------------------------------------------------------------
+
+    private function redirect()
+    {
+        $loc = ee()->config->item('uri_access_denied_url');
+
+        if(ee()->config->item('uri_access_append_uri')) {
+            $loc = $this->appendUri($loc);
+        }
+
+        ee()->functions->redirect($loc);
+
+    }
+
+    //--------------------------------------------------------------------------
+
+    private function appendUri($loc)
+    {
+        if(false !== strpos($this->compareUri, '?')) {
+            $loc .= '&';
+        } else {
+            $loc .= '?';
+        }
+
+        return $loc.'from='.$this->compareUri;
     }
 
     // ----------------------------------------------------------------------
