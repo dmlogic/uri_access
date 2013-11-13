@@ -27,6 +27,8 @@ Install the extension via the control panel as normal.
 
 ## Configuration
 
+Several settings need adding to your `system\expressionengine\config\config.php` file
+
 ### Access map (requried)
 
 This is where routes and associated access control IDs are defined. The format
